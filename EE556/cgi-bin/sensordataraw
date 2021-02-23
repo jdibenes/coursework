@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import cgi, cgitb, os
+
+print('Content-type: text/html\n\n')
+
+f = open('/home/pi/sensordata/data.txt', 'r')
+
+if f.mode == 'r':
+    data = '200;' + ';'.join(f.read().splitlines()) + ';'
+    print(data)
+else:
+    print('404;')

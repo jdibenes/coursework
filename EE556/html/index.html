@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Final Project</title>
+
+    <h1>Weather Station</h1>
+    <h2>Team 3</h2>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+
+    <script>
+        var m_tslastupdate;
+
+        $(document).ready(function() {
+            m_tslastupdate = new Date().getTime();
+            update_weather();
+            setInterval(update_timer, 1000);
+            setInterval(update_weather, 10000);
+        });
+
+        function update_timer() {
+            var diffupdate = Math.trunc((new Date().getTime() - m_tslastupdate) / 1000);
+            var timestr;
+
+            if (diffupdate <= 0) { timestr = "Just now"; }
+            else if (diffupdate == 1) { timestr = "1 second ago"; }
+            else { timestr = diffupdate.toString() + " seconds ago"; }
+
+            $("#updatetimer").html("Last updated: " + timestr);
+        }
+
+        function update_weather() {
+            $.get("cgi-bin/sensordataraw", function(data, status) {
+	        if (status.localeCompare("success") || status.localeCompare("notmodified")) {
+                    var str = data.trim().split(";");
+
+                    if (str.length >= 5) {
+                        status = "Connected to server!";
+
+                        temp = str[1];
+                        humi = str[2];
+                        baro = str[3];
+                        phot = str[4];
+
+                        $("#temp").html("<b>Temperature</b>: " + temp);
+                        $("#humi").html("<b>Humidity</b>: " + humi);
+                        $("#baro").html("<b>Pressure</b>: " + baro);
+                        $("#phot").html("<b>Light</b>: " + phot);
+
+                        m_tslastupdate = new Date().getTime();
+                    }
+                    else {
+                        status = "Failed to retrieve data from server!";
+                    }
+                }
+                else {
+	            status = "Couldn't connect to server!";
+                }
+
+                $("#status").html(status);
+            });
+        }
+    </script>
+</head>
+
+<body>
+<br>
+<div>This site requires that javascript is enabled</div>
+<div id=status>Retrieving data...</div>
+<div id=updatetimer>Wait...</div>
+<br>
+<br>
+<div id=temp>-</div><br> 
+<div id=humi>-</div><br>
+<div id=baro>-</div><br>
+<div id=phot>-</div><br>
+</body>
+
+</html>
