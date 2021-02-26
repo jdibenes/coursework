@@ -1,3 +1,3 @@
 # Instrumentacion Proyecto Final
 
-Texto con arreglo de LEDs.
+Texto con arreglo de LEDs en LabVIEW.
